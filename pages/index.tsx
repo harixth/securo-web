@@ -7,9 +7,10 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
+import { Form, MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu } from "antd";
 import React, { useState } from "react";
+import { Formik, Field } from "formik";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -35,8 +36,13 @@ const items: MenuItem[] = [
   getItem("Customer", "3", <TeamOutlined />),
 ];
 
+interface CustomerValues {
+  name: string;
+}
+
 const Home: NextPage = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const initialValues: CustomerValues = { name: "" };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -72,7 +78,24 @@ const Home: NextPage = () => {
           <div
             className="site-layout-background"
             style={{ padding: 24, minHeight: 360 }}
-          ></div>
+          >
+            <div>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={(values, actions) => {
+                  console.log({ values, actions });
+                  alert(JSON.stringify(values, null, 2));
+                  actions.setSubmitting(false);
+                }}
+              >
+                <Form>
+                  <label htmlFor="name">Customer's Name</label>
+                  <Field id="name" name="name" placeholder="Name" />
+                  <button type="submit">Submit</button>
+                </Form>
+              </Formik>
+            </div>
+          </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
           Securo ©2022 Created by Harixth
