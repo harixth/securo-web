@@ -1,16 +1,14 @@
 import type { NextPage } from "next";
-import styles from "../styles/Home.module.css";
 import {
   DesktopOutlined,
-  FileOutlined,
   PieChartOutlined,
   TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
-import { Form, MenuProps } from "antd";
+import { Button, Col, Form, MenuProps, Row } from "antd";
 import { Breadcrumb, Layout, Menu } from "antd";
 import React, { useState } from "react";
 import { Formik, Field } from "formik";
+import { createCustomer } from "../api/customer";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -31,18 +29,20 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Trade History", "1", <DesktopOutlined />),
+  getItem("Customer", "1", <TeamOutlined />),
   getItem("Fund", "2", <PieChartOutlined />),
-  getItem("Customer", "3", <TeamOutlined />),
+  getItem("Trade History", "3", <DesktopOutlined />),
+  
 ];
 
-interface CustomerValues {
+export interface CustomerDto {
   name: string;
+  email: string;
 }
 
 const Home: NextPage = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const initialValues: CustomerValues = { name: "" };
+  const initialValues: CustomerDto = { name: "", email: "" };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -82,16 +82,29 @@ const Home: NextPage = () => {
             <div>
               <Formik
                 initialValues={initialValues}
-                onSubmit={(values, actions) => {
-                  console.log({ values, actions });
-                  alert(JSON.stringify(values, null, 2));
-                  actions.setSubmitting(false);
+                onSubmit={(values, {setSubmitting}) => {
+                    createCustomer(values)
+                    setSubmitting(false)
                 }}
               >
                 <Form>
-                  <label htmlFor="name">Customer's Name</label>
+                <Row>
+                  <Col span={24}>
+                    <label htmlFor="name">Customer's Name</label>
                   <Field id="name" name="name" placeholder="Name" />
-                  <button type="submit">Submit</button>
+                  </Col>
+                 </Row>
+                 <Row>
+                  <Col span={24}>
+                    <label htmlFor="email">Customer's Email</label>
+                  <Field id="email" name="email" placeholder="Email" />
+                  </Col>
+                 </Row>
+                 <Row>
+                  <Col span={24}>
+                  <Button htmlType="submit">Submit</Button>
+                  </Col>
+                 </Row>
                 </Form>
               </Formik>
             </div>
